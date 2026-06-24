@@ -1,4 +1,5 @@
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
@@ -12,10 +13,21 @@ import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Automacao from './pages/Automacao';
 
+function ScrollToTop() {
+  const location = useLocation();
+  useEffect(() => {
+    // Skip when navigating with an anchor (e.g. footer links to /automacao sections)
+    if (location.state?.anchor) return;
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [location.pathname, location.key]);
+  return null;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <HashRouter>
+        <ScrollToTop />
         <div id="app" data-cy="app" className="flex flex-col min-h-screen">
           <Header />
           <div className="flex-1">
