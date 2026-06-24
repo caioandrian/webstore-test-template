@@ -100,6 +100,7 @@ export default function Header() {
     { to: '/', label: 'Início', id: 'nav-home' },
     { to: '/eventos', label: 'Eventos', id: 'nav-eventos' },
     { to: '/contato', label: 'Contato', id: 'nav-contato' },
+    { to: '/automacao', label: '🤖 Automação QA', id: 'nav-automacao' },
   ];
 
   return (
