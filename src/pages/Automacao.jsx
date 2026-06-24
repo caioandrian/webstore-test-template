@@ -250,20 +250,38 @@ const LS_KEYS = ['showtickets_session', 'showtickets_users', 'showtickets_orders
 
 function CopyButton({ text }) {
   const [copied, setCopied] = useState(false);
-  const copy = () => {
-    navigator.clipboard.writeText(`[data-cy="${text}"]`);
+  const handleCopy = (e) => {
+    const val = `[data-cy="${e.currentTarget.dataset.selector}"]`;
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(val).catch(() => fallbackCopy(val));
+    } else {
+      fallbackCopy(val);
+    }
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   };
   return (
     <button
-      onClick={copy}
-      title="Copiar seletor"
+      data-selector={text}
+      onClick={handleCopy}
+      title={`Copiar: [data-cy="${text}"]`}
       className="ml-1 px-1.5 py-0.5 text-xs rounded bg-purple-900/30 hover:bg-purple-700/40 text-purple-300 transition-colors flex-shrink-0"
     >
       {copied ? '✓' : '⎘'}
     </button>
   );
+}
+
+function fallbackCopy(text) {
+  const el = document.createElement('textarea');
+  el.value = text;
+  el.style.position = 'fixed';
+  el.style.opacity = '0';
+  document.body.appendChild(el);
+  el.focus();
+  el.select();
+  document.execCommand('copy');
+  document.body.removeChild(el);
 }
 
 function SectionAccordion({ section }) {
