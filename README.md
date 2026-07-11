@@ -2,9 +2,9 @@
 
 Aplicação web institucional de venda de ingressos construída como **template de automação de testes**. Todos os elementos interativos possuem atributos `data-cy` e `id` padronizados, cenários de mock previsíveis e estado isolado via `localStorage` — sem dependência de backend real.
 
-🌐 **Deploy:** [https://caioandrian.github.io/webstore-ingressos-sample/](https://caioandrian.github.io/webstore-ingressos-sample/)
+🌐 **Deploy:** [https://caioandrian.github.io/webstore-test-template/](https://caioandrian.github.io/webstore-test-template/)
 
-🤖 **Playground de Automação:** [/automacao](https://caioandrian.github.io/webstore-ingressos-sample/#/automacao) — referência de seletores, cenários de mock e reset de estado
+🤖 **Playground de Automação:** [/automacao](https://caioandrian.github.io/webstore-test-template/#/automacao) — referência de seletores, cenários de mock e reset de estado
 
 ---
 
@@ -82,7 +82,7 @@ await page.locator('[data-cy="login-submit-btn"]').click()
 driver.find_element(By.CSS_SELECTOR, '[data-cy="login-email"]').send_keys('user@email.com')
 ```
 
-> A referência completa de seletores está disponível na página [`#/automacao`](https://caioandrian.github.io/webstore-ingressos-sample/#/automacao).
+> A referência completa de seletores está disponível na página [`#/automacao`](https://caioandrian.github.io/webstore-test-template/#/automacao).
 
 ---
 
