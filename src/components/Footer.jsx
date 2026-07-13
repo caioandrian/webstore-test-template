@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 
 const scrollTop = () => window.scrollTo({ top: 0, behavior: 'instant' });
 
@@ -18,6 +19,7 @@ function NavLink({ to, children, id, dataCy, state }) {
 }
 
 export default function Footer() {
+  const { user } = useAuth();
   return (
     <footer id="footer" data-cy="footer" className="bg-[#080810] border-t border-purple-900/30 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
@@ -60,7 +62,7 @@ export default function Footer() {
                 { to: '/', label: 'Início' },
                 { to: '/eventos', label: 'Todos os Eventos' },
                 { to: '/meus-ingressos', label: 'Meus Ingressos' },
-                { to: '/perfil', label: 'Meu Perfil' },
+                { to: user ? '/perfil' : '/login?redirect=/perfil', label: 'Meu Perfil' },
                 { to: '/contato', label: 'Contato' },
               ].map((item) => (
                 <li key={item.to}>

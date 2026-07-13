@@ -887,44 +887,45 @@ export default function Purchase() {
             )}
           </div>
 
-          {/* Navigation buttons */}
-          {step < 5 && (
-            <div id="purchase-nav-buttons" data-cy="purchase-nav-buttons" className="flex items-center justify-between mt-4 gap-4">
-              <button
-                id="back-btn"
-                data-cy="back-btn"
-                onClick={handleBack}
-                disabled={step === 1}
-                className="flex items-center gap-2 px-5 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium"
-              >
-                ← Voltar
-              </button>
-
-              <button
-                id="next-btn"
-                data-cy="next-btn"
-                onClick={handleNext}
-                disabled={(step === 1 && totalTickets === 0) || processing}
-                className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-8 py-3 rounded-xl transition-all hover:scale-105 disabled:hover:scale-100 shadow-lg shadow-purple-900/40"
-              >
-                {processing ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Processando...
-                  </>
-                ) : step === 4 ? (
-                  '🔒 Finalizar Pedido'
-                ) : (
-                  'Continuar →'
-                )}
-              </button>
-            </div>
-          )}
         </div>
 
         {/* Order summary sidebar */}
         {step < 5 && (
           <OrderSummary event={event} ticketSelection={ticketSelection} selectedAddons={selectedAddons} />
+        )}
+
+        {/* Navigation buttons */}
+        {step < 5 && (
+          <div id="purchase-nav-buttons" data-cy="purchase-nav-buttons" className="col-span-full flex items-center justify-between gap-4">
+            <button
+              id="back-btn"
+              data-cy="back-btn"
+              onClick={handleBack}
+              disabled={step === 1}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-gray-300 hover:text-white hover:bg-white/5 transition-all disabled:opacity-30 disabled:cursor-not-allowed font-medium"
+            >
+              ← Voltar
+            </button>
+
+            <button
+              id="next-btn"
+              data-cy="next-btn"
+              onClick={handleNext}
+              disabled={(step === 1 && totalTickets === 0) || processing}
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold px-8 py-3 rounded-xl transition-all hover:scale-105 disabled:hover:scale-100 shadow-lg shadow-purple-900/40"
+            >
+              {processing ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  Processando...
+                </>
+              ) : step === 4 ? (
+                '🔒 Finalizar Pedido'
+              ) : (
+                'Continuar →'
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>
