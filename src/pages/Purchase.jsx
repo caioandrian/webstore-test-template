@@ -22,47 +22,33 @@ function StepTickets({ event, selection, onChange }) {
             data-ticket-id={ticket.id}
             className="bg-[#13131f] border border-purple-900/30 rounded-2xl p-5"
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="text-white font-bold text-lg">{ticket.name}</h3>
-                  {ticket.available < 50 && (
-                    <span className="bg-orange-600/20 text-orange-400 text-xs px-2 py-0.5 rounded-full border border-orange-600/30">
-                      Últimas {ticket.available} unidades
-                    </span>
-                  )}
-                </div>
-
-                <div className="flex gap-6">
-                  {/* Inteira */}
-                  <div>
-                    <p className="text-gray-500 text-xs mb-0.5">Inteira</p>
-                    <p className="text-white font-bold text-xl">
-                      R$ {ticket.price.toFixed(2).replace('.', ',')}
-                    </p>
-                  </div>
-                  {/* Meia */}
-                  <div>
-                    <p className="text-gray-500 text-xs mb-0.5">Meia-Entrada ½</p>
-                    <p className="text-purple-300 font-bold text-xl">
-                      R$ {ticket.halfPrice.toFixed(2).replace('.', ',')}
-                    </p>
-                  </div>
-                </div>
+            <div className="flex flex-col gap-4">
+              {/* Ticket name + badge */}
+              <div className="flex items-center gap-2">
+                <h3 className="text-white font-bold text-lg">{ticket.name}</h3>
+                {ticket.available < 50 && (
+                  <span className="bg-orange-600/20 text-orange-400 text-xs px-2 py-0.5 rounded-full border border-orange-600/30">
+                    Últimas {ticket.available} unidades
+                  </span>
+                )}
               </div>
 
-              {/* Quantity controls */}
-              <div className="flex flex-col gap-3">
+              {/* Per-type rows: label + price, then controls */}
+              <div className="space-y-3">
                 {['inteira', 'meia'].map((type) => {
                   const key = `${ticket.id}_${type}`;
                   const qty = selection[key] || 0;
                   const price = type === 'meia' ? ticket.halfPrice : ticket.price;
+                  const label = type === 'meia' ? 'Meia-Entrada ½' : 'Inteira';
                   return (
-                    <div key={type} className="flex items-center gap-2">
-                      <span className="text-gray-400 text-xs w-12 text-right">
-                        {type === 'meia' ? '½' : '1x'}
-                      </span>
-                      <div className="flex items-center gap-1">
+                    <div key={type}>
+                      <div className="flex items-baseline justify-between mb-1">
+                        <span className="text-gray-500 text-xs">{label}</span>
+                        <span className={`font-bold text-xl ${type === 'meia' ? 'text-purple-300' : 'text-white'}`}>
+                          R$ {price.toFixed(2).replace('.', ',')}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2 justify-center">
                         <button
                           id={`qty-decrease-${ticket.id}-${type}`}
                           data-cy="qty-decrease"
@@ -268,12 +254,12 @@ function StepPayment({ paymentData, onChange, errors, total, processing }) {
       </div>
 
       {/* Payment method tabs */}
-      <div id="payment-method-tabs" data-cy="payment-method-tabs" className="flex gap-2 mb-6">
+      <div id="payment-method-tabs" data-cy="payment-method-tabs" className="grid grid-cols-2 sm:flex gap-2 mb-6">
         {[
-          { id: 'credit', label: '💳 Cartão de Crédito' },
-          { id: 'debit', label: '💳 Cartão de Débito' },
-          { id: 'pix', label: '⚡ PIX' },
-          { id: 'boleto', label: '📄 Boleto' },
+          { id: 'credit', labelShort: '💳 Crédito', labelFull: '💳 Cartão de Crédito' },
+          { id: 'debit', labelShort: '💳 Débito', labelFull: '💳 Cartão de Débito' },
+          { id: 'pix', labelShort: '⚡ PIX', labelFull: '⚡ PIX' },
+          { id: 'boleto', labelShort: '📄 Boleto', labelFull: '📄 Boleto' },
         ].map((m) => (
           <button
             key={m.id}
@@ -288,7 +274,8 @@ function StepPayment({ paymentData, onChange, errors, total, processing }) {
                 : 'bg-[#1a1a2e] text-gray-300 hover:text-white border border-purple-900/30'
             }`}
           >
-            {m.label}
+            <span className="sm:hidden">{m.labelShort}</span>
+            <span className="hidden sm:inline">{m.labelFull}</span>
           </button>
         ))}
       </div>

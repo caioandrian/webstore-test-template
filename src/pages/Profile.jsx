@@ -26,7 +26,7 @@ function Toast({ message, type }) {
     ? 'bg-green-900/30 border-green-700/40 text-green-300'
     : 'bg-red-900/30 border-red-700/40 text-red-400';
   return (
-    <div id="toast-notification" data-cy="toast" className={`fixed top-20 right-4 z-50 border rounded-xl px-5 py-3 text-sm font-medium shadow-xl ${colors} animate-bounce`}>
+    <div id="toast-notification" data-cy="toast" className={`fixed top-20 right-4 z-50 max-w-[calc(100vw-2rem)] border rounded-xl px-5 py-3 text-sm font-medium shadow-xl ${colors} animate-bounce`}>
       {type === 'success' ? '✓ ' : '✗ '}{message}
     </div>
   );
@@ -346,7 +346,7 @@ function Orders({ userId, navigate }) {
 
             <div className="p-5">
               <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
-                <div className="flex gap-5">
+                <div className="flex flex-wrap gap-x-5 gap-y-2">
                   <div>
                     <p className="text-gray-500 text-xs">Pedido</p>
                     <p id={`order-id-label-${order.id}`} data-cy="order-id-label" className="text-purple-300 font-mono text-sm font-bold">{order.id}</p>

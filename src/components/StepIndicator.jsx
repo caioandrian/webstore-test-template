@@ -11,12 +11,12 @@ export default function StepIndicator({ currentStep }) {
     <div id="step-indicator" data-cy="step-indicator" className="w-full mb-8">
       <div className="flex items-center justify-between relative">
         {/* Progress bar background */}
-        <div className="absolute top-5 left-0 right-0 h-0.5 bg-purple-900/50 z-0" />
+        <div className="absolute top-4 sm:top-5 left-0 right-0 h-0.5 bg-purple-900/50 z-0" />
         {/* Progress bar fill */}
         <div
           id="step-progress-bar"
           data-cy="step-progress-bar"
-          className="absolute top-5 left-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 z-0 transition-all duration-500"
+          className="absolute top-4 sm:top-5 left-0 h-0.5 bg-gradient-to-r from-purple-600 to-pink-600 z-0 transition-all duration-500"
           style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
         />
 
@@ -34,7 +34,7 @@ export default function StepIndicator({ currentStep }) {
               className="flex flex-col items-center gap-2 relative z-10"
             >
               <div
-                className={`w-10 h-10 rounded-full flex items-center justify-center text-lg transition-all duration-300 border-2 ${
+                className={`w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-base sm:text-lg transition-all duration-300 border-2 ${
                   isDone
                     ? 'bg-purple-600 border-purple-600 shadow-lg shadow-purple-900/50'
                     : isActive
