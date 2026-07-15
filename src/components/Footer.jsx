@@ -137,7 +137,7 @@ export default function Footer() {
 
         <div className="border-t border-purple-900/30 mt-10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-gray-500 text-xs">
-            © 2025 ShowTickets. Todos os direitos reservados. Projeto demonstrativo.
+            © 2026 QA TEST TEMPLATE. Todos os direitos reservados. Projeto demonstrativo.
           </p>
           <div className="flex items-center gap-4">
             <span className="text-gray-500 text-xs">Formas de pagamento:</span>
