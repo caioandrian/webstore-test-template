@@ -421,7 +421,7 @@ function Orders({ userId, navigate }) {
                   <div className="flex flex-col items-center py-4 bg-white rounded-xl mx-auto max-w-[180px]">
                     <div className="w-24 h-24 bg-black rounded-lg flex items-center justify-center text-4xl">📱</div>
                     <p className="text-gray-500 text-xs mt-2 font-medium text-center">QR Code do Ingresso</p>
-                    <p className="text-gray-400 text-[10px] text-center px-2 break-all">{order.transactionId}</p>
+                    <p className="text-gray-400 text-[10px] text-center px-2 break-all">{`https://caioandrian.github.io/webstore-test-template/#/meus-ingressos?order=${order.id}`}</p>
                   </div>
 
                   <p className="text-gray-600 text-xs text-center">

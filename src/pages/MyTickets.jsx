@@ -1,16 +1,27 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { storage } from '../utils/localStorage';
 import { getEventById } from '../data/mockEvents';
 
-function TicketCard({ order }) {
-  const [expanded, setExpanded] = useState(false);
+const BASE_URL = 'https://caioandrian.github.io/webstore-test-template';
+
+function TicketCard({ order, autoExpand }) {
+  const [expanded, setExpanded] = useState(autoExpand);
+  const cardRef = useRef(null);
   const event = getEventById(order.event?.id);
+
+  useEffect(() => {
+    if (autoExpand && cardRef.current) {
+      cardRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [autoExpand]);
   const totalTickets = Object.values(order.tickets || {}).reduce((s, v) => s + v, 0);
+  const qrUrl = `${BASE_URL}/#/meus-ingressos?order=${order.id}`;
 
   return (
     <div
+      ref={cardRef}
       id={`ticket-card-${order.id}`}
       data-cy="ticket-card"
       data-order-id={order.id}
@@ -144,7 +155,7 @@ function TicketCard({ order }) {
             <div className="flex flex-col items-center py-4 bg-white rounded-2xl max-w-[180px] mx-auto">
               <div className="w-28 h-28 bg-black rounded-lg flex items-center justify-center text-5xl">📱</div>
               <p className="text-gray-500 text-xs mt-2 font-medium">QR Code do Ingresso</p>
-              <p className="text-gray-400 text-[10px] px-2 text-center break-all">{order.transactionId}</p>
+              <p className="text-gray-400 text-[10px] px-2 text-center break-all">{qrUrl}</p>
             </div>
 
             <p className="text-gray-600 text-xs text-center">
@@ -160,6 +171,8 @@ function TicketCard({ order }) {
 export default function MyTickets() {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useSearchParams();
+  const targetOrderId = searchParams.get('order');
 
   if (!user) {
     return (
@@ -235,7 +248,7 @@ export default function MyTickets() {
       ) : (
         <div id="orders-list" data-cy="orders-list" className="space-y-4">
           {orders.map((order) => (
-            <TicketCard key={order.id} order={order} />
+            <TicketCard key={order.id} order={order} autoExpand={order.id === targetOrderId} />
           ))}
         </div>
       )}

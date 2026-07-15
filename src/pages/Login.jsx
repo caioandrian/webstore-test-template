@@ -71,7 +71,7 @@ function LoginForm({ onSuccess }) {
 
       <div className="bg-blue-900/20 border border-blue-700/30 rounded-xl p-3 mt-2">
         <p className="text-blue-300 text-xs font-medium mb-1">💡 Conta de demonstração:</p>
-        <p className="text-blue-400/80 text-xs">Cadastre-se para criar uma conta ou use qualquer e-mail já registrado.</p>
+        <p className="text-blue-400/80 text-xs">Cadastre-se para criar uma conta ou use qualquer e-mail já registrado. Nenhum dado é armazenado em servidores ou compartilhado com terceiros — tudo fica salvo apenas na sua própria máquina.</p>
       </div>
     </form>
   );
