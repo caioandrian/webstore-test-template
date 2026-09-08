@@ -16,7 +16,7 @@ black-box é a **disponibilidade de uma superfície WebMCP**.
 | Mensagem | `chore: atualiza copyright do footer para 2026 QA TEST TEMPLATE` |
 | Branch criada | `experiment/webmcp` |
 | Baseline black-box comparável | `run-20260908T160333Z-5dwq59` (`https://caioandrian.github.io/webstore-test-template/`) |
-| Commits nesta branch | **nenhum** — as alterações permanecem no working tree |
+| URL publicada | `https://caioandrian.github.io/webstore-test-template/webmcp/` |
 | SUT original | `main` permanece em `12f8274`, intacta |
 
 O commit base foi confirmado assim: `main == origin/main == 12f8274`, working tree
@@ -323,6 +323,25 @@ O benchmark oficial **não** foi executado e **nenhuma comparação** com o base
 feita.
 
 ---
+
+### Validação da URL publicada (Chromium do agente, `153.0.8010.12`)
+
+| Verificação | Resultado |
+|---|---|
+| `…/webmcp/` carrega | ✓ 200, `#app` montado, **0 respostas ≥400, 0 erros de console** |
+| Assets no subpath | ✓ `/webstore-test-template/webmcp/assets/…` |
+| Roteamento (HashRouter) | ✓ `webmcp/#/eventos` → 5 cards, "5 eventos encontrados" |
+| WebMCP disponível | ✓ `api: "shim"`, `native: false` |
+| Descoberta | ✓ 6 ferramentas com `inputSchema` e `required` corretos |
+| `searchEvents({query:'rock'})` | ✓ 1 evento |
+| `getEventDetails` | ✓ "Rock Festival Brasil 2025", 4 tipos de ingresso |
+| `getPurchaseQuote` | ✓ R$ 796,00 |
+| Erros controlados | ✓ `INVALID_ARGUMENTS`, `NOT_FOUND`, `UNKNOWN_TOOL` |
+| Vazamento com sessão real ativa | ✓ senha, e-mail, CPF, `showtickets_users`, `BUG-`, `ground-truth`, `/src/`: **nenhuma ocorrência** |
+| Ground Truth acessível por URL | ✓ 404 em todos os caminhos testados |
+| Baseline sem WebMCP | ✓ `navigator.modelContext === undefined`, `__webmcp === null` |
+| Baseline byte a byte | ✓ os 5 arquivos com SHA-256 idêntico ao de antes do deploy |
+| Screenshot home 1280×800 | ✓ baseline e variante: `08e618bbec910258` |
 
 ## 8. Limitações e riscos
 
