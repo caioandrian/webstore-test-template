@@ -68,7 +68,10 @@ jobs:
         with:
           node-version: 24
 
-      - run: npm ci
+      # `npm install`, nao `npm ci`: e a mesma estrategia do workflow da main, que
+      # produziu o baseline. O lockfile gerado no Windows omite pacotes opcionais
+      # especificos de Linux (@emnapi/runtime), o que faz `npm ci` falhar no runner.
+      - run: npm install
 
       - name: Testes da superficie WebMCP
         run: npm test
