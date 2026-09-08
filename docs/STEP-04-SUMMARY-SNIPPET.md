@@ -22,6 +22,7 @@ agente foi alterado; nenhum benchmark foi executado; nenhuma comparação foi fe
 | Branch criada | `experiment/webmcp` |
 | `main` do SUT | intacta em `12f8274` |
 | Commits criados | nenhum |
+| URL publicada da variante | `https://caioandrian.github.io/webstore-test-template/webmcp/` |
 | Documentação da variante | `docs/WEBMCP-VARIANT.md` na branch do SUT |
 
 ## Ferramentas WebMCP
@@ -90,10 +91,14 @@ Nenhuma página, texto, produto, dado, seletor `data-cy`, estilo ou defeito foi 
 
 ## Confundidores a controlar no Step 5
 
-- **URL**: baseline em `https://caioandrian.github.io/webstore-test-template/`;
-  validação do Step 4 em `http://localhost:4173/webstore-test-template/`. O Step 4 não
-  adicionou deploy nem alterou CI/CD — a publicação da variante é decisão do Step 5.
-  Se os braços rodarem em origens diferentes, isso precisa entrar em `confounders`.
+- **URL**: baseline em `https://caioandrian.github.io/webstore-test-template/`,
+  variante em `https://caioandrian.github.io/webstore-test-template/webmcp/`. **Mesma
+  origem** — a diferença de origem deixou de ser confundidor.
+- **`localStorage` é compartilhado** entre os dois braços (mesma origem). O Step 5
+  precisa limpar `showtickets_session`, `showtickets_users` e `showtickets_orders`
+  entre execuções, ou um braço herda o estado do outro.
+- **Fragilidade do deploy**: um push na `main` dispara `deploy.yml`, cujo artefato só
+  tem a raiz, e isso apaga `/webmcp/`. Não publicar a `main` durante o benchmark.
 - **Contrato de ações**: ainda não decidido se as ferramentas viram novas
   `AgentAction` ou são despachadas sob o mesmo `BrowserDriver`. Se `DECISION_SCHEMA` ou
   o prompt mudarem, o prompt deixa de ser idêntico entre os braços — confundidor.
