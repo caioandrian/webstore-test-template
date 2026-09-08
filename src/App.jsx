@@ -12,6 +12,7 @@ import Login from './pages/Login';
 import Profile from './pages/Profile';
 import NotFound from './pages/NotFound';
 import Automacao from './pages/Automacao';
+import WebMcpProvider from './webmcp/WebMcpProvider';
 
 function ScrollToTop() {
   const location = useLocation();
@@ -28,6 +29,7 @@ export default function App() {
     <AuthProvider>
       <HashRouter>
         <ScrollToTop />
+        <WebMcpProvider />
         <div id="app" data-cy="app" className="flex flex-col min-h-screen">
           <Header />
           <div className="flex-1">

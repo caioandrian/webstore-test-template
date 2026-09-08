@@ -1,0 +1,96 @@
+name: Deploy WebMCP variant
+
+# Publica a variante experimental em /webstore-test-template/webmcp/ sem alterar
+# o baseline publicado na raiz.
+#
+# O GitHub Pages deste repositorio usa a fonte "GitHub Actions", em que cada
+# deployment substitui o site inteiro — nao existe publicacao parcial. Por isso o
+# artefato precisa conter raiz + webmcp/. Para nao alterar um unico byte do
+# baseline, a raiz NAO e reconstruida: e copiada verbatim do site ja publicado.
+# (Um rebuild de 12f8274 nao reproduz os bytes atuais, porque o workflow da main
+# usa `npm install` e as dependencias flutuaram desde julho.)
+#
+# ATENCAO: qualquer push na `main` dispara .github/workflows/deploy.yml, cujo
+# artefato contem somente a raiz — e isso apaga /webmcp/. Enquanto o benchmark
+# estiver ativo, nao publicar a main.
+
+on:
+  push:
+    branches: [experiment/webmcp]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  BASELINE_COMMIT: 12f82740fd8758b88c000749e2fed3023690ade4
+  BASELINE_URL: https://caioandrian.github.io/webstore-test-template
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}webmcp/
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Snapshot verbatim do baseline publicado
+        run: |
+          set -euo pipefail
+          mkdir -p site/assets
+
+          # Arquivos de public/ sao copiados verbatim pelo Vite: vem do commit base.
+          git show "$BASELINE_COMMIT:public/favicon.svg" > site/favicon.svg
+          git show "$BASELINE_COMMIT:public/icons.svg"  > site/icons.svg
+
+          # index.html e os assets hasheados vem do site vivo, sem rebuild.
+          curl -fsS "$BASELINE_URL/" -o site/index.html
+          assets=$(grep -oE 'assets/index-[A-Za-z0-9_-]+\.(js|css)' site/index.html | sort -u)
+          test -n "$assets"
+          for a in $assets; do
+            curl -fsS "$BASELINE_URL/$a" -o "site/$a"
+          done
+
+          # O baseline nao pode referenciar o subpath da variante.
+          ! grep -q '/webmcp/' site/index.html
+          ls -R site
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - run: npm ci
+
+      - name: Testes da superficie WebMCP
+        run: npm test
+
+      - name: Build da variante no subpath
+        run: npx vite build --base=/webstore-test-template/webmcp/ --outDir site/webmcp
+
+      - name: Conferir o artefato antes de publicar
+        run: |
+          set -euo pipefail
+          # A variante resolve seus assets sob /webmcp/.
+          grep -q '/webstore-test-template/webmcp/assets/' site/webmcp/index.html
+          # Nem o Ground Truth nem qualquer marcador de defeito vao ao ar.
+          ! grep -rqE 'BUG-[0-9]{3}|ground-truth' site
+          ! find site -iname '*ground-truth*' | grep -q .
+          find site -type f | sort
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - uses: actions/deploy-pages@v4
+        id: deployment
