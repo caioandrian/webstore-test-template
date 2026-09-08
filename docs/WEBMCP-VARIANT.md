@@ -183,21 +183,72 @@ Bytes idênticos.
 
 ## 5. Deployment / Experimental Confounders
 
-- O **baseline black-box** foi executado contra **GitHub Pages**, servindo `main` em
-  `12f8274`.
-- A **validação do Step 4** foi executada contra **`vite preview` em `localhost:4173`**
-  (contexto seguro, portanto WebMCP é permitido).
-- Isso é um **confundidor potencial**: origem, latência de rede e caminho de
-  carregamento diferem entre os dois braços. Não foi resolvido aqui — por decisão
-  explícita, o Step 4 não adiciona workflow de deploy nem altera CI/CD.
-- **A decisão de como publicar a variante fica para o Step 5.** Se a comparação for
-  feita entre gh-pages e localhost, o `compareRuns` do agente deve registrar a
-  diferença de URL como confundidor, e a conclusão precisa levá-la em conta.
-- `BUG-010` do Ground Truth (QR com URL de produção fixa) foi **excluído do
-  denominador de recall** exatamente porque só se manifesta fora de produção — ou
-  seja, apenas em um dos dois ambientes.
+### Publicação
 
----
+A variante está publicada em:
+
+**`https://caioandrian.github.io/webstore-test-template/webmcp/`**
+
+O baseline permanece em `https://caioandrian.github.io/webstore-test-template/`,
+**byte a byte inalterado**.
+
+### Por que o workflow é assim
+
+O Pages deste repositório usa a fonte *GitHub Actions* (`build_type: "workflow"`),
+em que **cada deployment substitui o site inteiro** — não existe publicação parcial.
+O artefato precisa portanto conter raiz + `webmcp/`.
+
+Reconstruir a raiz não é opção: o workflow da `main` usa `npm install`, e as
+dependências flutuaram desde julho/2026. Um rebuild de `12f8274` produz
+`index-D2wYR4Yw.js`, enquanto o publicado é `index-CmyWbIII.js` — os bytes do
+baseline mudariam.
+
+Estratégia adotada em [`.github/workflows/deploy-webmcp.yml`](../.github/workflows/deploy-webmcp.yml):
+
+1. **Snapshot verbatim do baseline, sem rebuild** — `favicon.svg`/`icons.svg` de
+   `git show 12f8274:public/`; `index.html` e os dois assets hasheados baixados do
+   site vivo.
+2. **Build da variante** com `vite build --base=/webstore-test-template/webmcp/`.
+   `vite.config.js` não é alterado — a base vem por flag.
+3. **Publicação da união** como um artefato só.
+
+`.github/workflows/deploy.yml` (o da `main`) não foi tocado.
+
+### Metadados do deployment
+
+| | |
+|---|---|
+| Branch publicada | `experiment/webmcp` |
+| Commit publicado | ver `gh api repos/caioandrian/webstore-test-template/deployments --jq '.[0]'` |
+| Workflow | `Deploy WebMCP variant` |
+| Environment | `github-pages` (policy ampliada para aceitar `experiment/webmcp`) |
+
+Nenhum arquivo de identificação (`COMMIT.txt` ou equivalente) foi adicionado à
+superfície pública: a rastreabilidade vive nos metadados do Actions, fora da
+aplicação.
+
+### Fragilidade permanente
+
+**Qualquer push na `main` dispara `deploy.yml`, cujo artefato contém somente a
+raiz — e isso apaga `/webmcp/`.** Enquanto o benchmark estiver ativo, não publicar
+a `main`. Se acontecer, basta re-executar `Deploy WebMCP variant`.
+
+### Confundidores
+
+- **Origem deixou de ser confundidor.** Os dois braços passam a ser servidos pelo
+  mesmo host (`caioandrian.github.io`), pelo mesmo CDN, com o mesmo TLS. Restam
+  diferenças de *path*, não de origem.
+- **`localStorage` é compartilhado entre os dois braços** — mesma origem. O Step 5
+  precisa limpar `showtickets_session`, `showtickets_users` e `showtickets_orders`
+  entre execuções, ou um braço herda o estado do outro.
+- **Toolchain de build difere entre os braços.** O baseline foi compilado em
+  julho/2026 com as dependências daquele momento; a variante é compilada agora. As
+  versões de runtime e build são idênticas (react 19.2.7, react-dom 19.2.7,
+  react-router-dom 7.18.0, vite 8.1.0, tailwindcss 4.3.1, @vitejs/plugin-react
+  6.0.3 — verificado no lockfile), e o screenshot renderizado é idêntico, mas os
+  bundles não são byte a byte iguais.
+- `BUG-010` (QR com `BASE_URL` de produção fixo) continua **fora do denominador**:
+  na variante o QR aponta para a raiz do baseline, não para `/webmcp/`.
 
 ## 6. Ground Truth
 
